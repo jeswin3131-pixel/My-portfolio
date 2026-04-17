@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — AutoCAD Web Studio</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* HERO */
+.about-hero {
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.1) 0%, transparent 70%);
+  border-bottom: 1px solid var(--border);
+}
+.about-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; margin-bottom: 1rem; }
+.about-hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 620px; margin: 0 auto; }
+
+/* MISSION */
+.mission-section { padding: 5rem 2rem; }
+.mission-inner { max-width: 1000px; margin: 0 auto; }
+.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+.mission-text h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1.25rem; line-height: 1.2; }
+.mission-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+.mission-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.mission-visual::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at center, rgba(0,212,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.mission-stat { margin-bottom: 2rem; }
+.mission-stat:last-child { margin-bottom: 0; }
+.mission-stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+.mission-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-bottom: 0.3rem; }
+.mission-bar-fill { height: 100%; border-radius: 3px; }
+.mission-stat-val { font-size: 0.8rem; color: var(--text-muted); }
+
+/* VALUES */
+.values-section { background: var(--bg-secondary); padding: 5rem 2rem; }
+.values-inner { max-width: 1100px; margin: 0 auto; }
+.value-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: all 0.3s;
+}
+.value-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+.value-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.value-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.value-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+/* TEAM */
+.team-section { padding: 5rem 2rem; }
+.team-inner { max-width: 1100px; margin: 0 auto; }
+.team-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+.team-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); border-color: rgba(0,212,255,0.2); }
+.avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  border: 3px solid;
+}
+.team-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.team-role { font-size: 0.8rem; color: var(--cyan); margin-bottom: 0.75rem; font-weight: 600; }
+.team-bio { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+.team-links { margin-top: 1rem; display: flex; justify-content: center; gap: 0.75rem; }
+.team-link {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.team-link:hover { border-color: var(--cyan); background: rgba(0,212,255,0.1); }
+
+/* TIMELINE */
+.timeline-section { background: var(--bg-secondary); padding: 5rem 2rem; }
+.timeline-inner { max-width: 700px; margin: 0 auto; }
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--cyan), var(--purple)); }
+.timeline-item { position: relative; padding: 0 0 2.5rem 2rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+  position: absolute;
+  left: -2rem; top: 4px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 3px solid;
+  background: var(--bg-secondary);
+  transform: translateX(50%);
+}
+.timeline-date { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+.timeline-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem; }
+.timeline-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+/* CONTACT */
+.contact-section { padding: 5rem 2rem; }
+.contact-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+.contact-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
+.contact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+.contact-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-3px); }
+.contact-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+.contact-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; }
+.contact-card p { font-size: 0.78rem; color: var(--text-muted); }
+
+@media (max-width: 768px) {
+  .mission-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .contact-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">⚙️</div>
+    <span>AutoCAD Web Studio</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="sketch2d.html">2D Sketch</a></li>
+    <li><a href="sketch3d.html">3D Sketch</a></li>
+    <li><a href="shortcuts.html">Shortcuts</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="sketch2d.html" class="nav-cta">Start Drawing</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+<!-- HERO -->
+<div class="about-hero">
+  <div class="badge badge-cyan" style="margin-bottom:1rem;">👋 Our Story</div>
+  <h1>Built by Designers, <span class="gradient-cyan">For Designers</span></h1>
+  <p>We believe professional CAD tools should be accessible to everyone — not locked behind expensive software licenses or complex installations.</p>
+</div>
+
+<!-- MISSION -->
+<section class="mission-section">
+  <div class="mission-inner">
+    <div class="mission-grid">
+      <div class="mission-text">
+        <div class="badge badge-cyan" style="margin-bottom:1rem;">🎯 Our Mission</div>
+        <h2>Democratizing <span class="gradient-cyan">CAD Design</span></h2>
+        <p>AutoCAD Web Studio was born out of frustration with the status quo. Why should a student learning mechanical design, a freelance architect, or a startup engineer have to spend hundreds of dollars on software just to start creating?</p>
+        <p>We built a browser-based CAD platform that gives you the tools you need — 2D drafting, 3D modeling, dimension tools, layers, and more — completely free, with no download required.</p>
+        <p>Our platform is inspired by industry-standard AutoCAD workflows so that anything you learn here transfers directly to professional environments.</p>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+          <a href="sketch2d.html" class="btn btn-primary">Start Drawing Free</a>
+          <a href="shortcuts.html" class="btn btn-outline">View Shortcuts</a>
+        </div>
+      </div>
+      <div class="mission-visual">
+        <div class="mission-stat">
+          <div class="mission-stat-label">2D Drawing Tools</div>
+          <div class="mission-bar"><div class="mission-bar-fill" style="width:90%;background:linear-gradient(90deg,#00d4ff,#0095ff);"></div></div>
+          <div class="mission-stat-val">50+ tools available</div>
+        </div>
+        <div class="mission-stat">
+          <div class="mission-stat-label">3D Modeling Shapes</div>
+          <div class="mission-bar"><div class="mission-bar-fill" style="width:80%;background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div></div>
+          <div class="mission-stat-val">8+ primitive shapes</div>
+        </div>
+        <div class="mission-stat">
+          <div class="mission-stat-label">Keyboard Shortcuts</div>
+          <div class="mission-bar"><div class="mission-bar-fill" style="width:95%;background:linear-gradient(90deg,#f97316,#eab308);"></div></div>
+          <div class="mission-stat-val">100+ AutoCAD-standard</div>
+        </div>
+        <div class="mission-stat">
+          <div class="mission-stat-label">Browser Compatibility</div>
+          <div class="mission-bar"><div class="mission-bar-fill" style="width:98%;background:linear-gradient(90deg,#22c55e,#00d4ff);"></div></div>
+          <div class="mission-stat-val">Chrome, Firefox, Edge, Safari</div>
+        </div>
+        <div class="mission-stat">
+          <div class="mission-stat-label">Export Formats</div>
+          <div class="mission-bar"><div class="mission-bar-fill" style="width:70%;background:linear-gradient(90deg,#ec4899,#8b5cf6);"></div></div>
+          <div class="mission-stat-val">PNG, SVG, PDF (coming soon)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="values-inner">
+    <div class="section-title gradient-purple">What We Stand For</div>
+    <p class="section-subtitle">These core values guide every decision we make.</p>
+    <div class="grid-3" style="margin-top:2.5rem;">
+      <div class="value-card">
+        <div class="value-icon">🆓</div>
+        <h3>Free Forever</h3>
+        <p>Core tools will always be free. We believe access to professional design software shouldn't be a privilege of those who can afford expensive licenses.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">⚡</div>
+        <h3>Zero Friction</h3>
+        <p>No downloads, no accounts required to start. Open a browser, open the canvas, start drawing. We optimize for the fastest path from idea to design.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🎓</div>
+        <h3>Education First</h3>
+        <p>We use AutoCAD-standard shortcuts and workflows so students and professionals can learn transferable skills that apply everywhere in the industry.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔒</div>
+        <h3>Privacy Focused</h3>
+        <p>Your designs stay on your device. We don't store your drawings or sell your data. What you create is yours, always.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌍</div>
+        <h3>Globally Accessible</h3>
+        <p>Designed to work on any device, anywhere in the world — with offline capability so you can keep working even without internet.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🚀</div>
+        <h3>Constantly Improving</h3>
+        <p>We ship updates every week based on user feedback. If you're missing a tool or feature, let us know — we build what you actually need.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="team-inner">
+    <div class="section-title gradient-cyan">Meet the Team</div>
+    <p class="section-subtitle">A passionate team of engineers and designers building the future of CAD.</p>
+    <div class="grid-4" style="margin-top:2.5rem;">
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(0,212,255,0.1);border-color:var(--cyan);">👨‍💻</div>
+        <h3>Alex Chen</h3>
+        <div class="team-role">Founder & Lead Engineer</div>
+        <div class="team-bio">10+ years building CAD tools. Former AutoDesk engineer who wanted to make professional design accessible to everyone.</div>
+        <div class="team-links"><a href="#" class="team-link">🐦</a><a href="#" class="team-link">💼</a><a href="#" class="team-link">🐙</a></div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(139,92,246,0.1);border-color:var(--purple);">👩‍🎨</div>
+        <h3>Priya Sharma</h3>
+        <div class="team-role" style="color:var(--purple);">Head of Design</div>
+        <div class="team-bio">UX specialist focused on making complex CAD interactions intuitive. Passionate about inclusive design and accessibility.</div>
+        <div class="team-links"><a href="#" class="team-link">🐦</a><a href="#" class="team-link">💼</a><a href="#" class="team-link">🎨</a></div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(249,115,22,0.1);border-color:var(--orange);">👨‍🔬</div>
+        <h3>Marcus Webb</h3>
+        <div class="team-role" style="color:var(--orange);">3D Engine Developer</div>
+        <div class="team-bio">Three.js and WebGL specialist. Built real-time 3D rendering systems for game studios before joining the CAD world.</div>
+        <div class="team-links"><a href="#" class="team-link">🐦</a><a href="#" class="team-link">💼</a><a href="#" class="team-link">🐙</a></div>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:rgba(34,197,94,0.1);border-color:var(--green);">👩‍💻</div>
+        <h3>Sofia Morales</h3>
+        <div class="team-role" style="color:var(--green);">Product & Community</div>
+        <div class="team-bio">Architecture graduate turned product manager. Bridges the gap between designer needs and engineering capabilities.</div>
+        <div class="team-links"><a href="#" class="team-link">🐦</a><a href="#" class="team-link">💼</a><a href="#" class="team-link">📧</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="timeline-inner">
+    <div class="section-title gradient-orange">Our Journey</div>
+    <p class="section-subtitle" style="margin-bottom:3rem;">From a weekend project to a platform trusted by thousands.</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--cyan);"></div>
+        <div class="timeline-date" style="color:var(--cyan);">January 2022</div>
+        <h3>The Beginning</h3>
+        <p>Alex builds the first prototype — a simple HTML5 canvas with line and circle tools — in a weekend hackathon. Shares it on Twitter and gets 2,000 stars overnight.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--purple);"></div>
+        <div class="timeline-date" style="color:var(--purple);">June 2022</div>
+        <h3>Team Grows</h3>
+        <p>Priya and Marcus join the project. The team adds layer management, dimension tools, and the first version of undo/redo history. User base reaches 10,000.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--orange);"></div>
+        <div class="timeline-date" style="color:var(--orange);">February 2023</div>
+        <h3>3D Studio Launch</h3>
+        <p>Marcus ships the Three.js-powered 3D studio. First day sees 5,000 users creating 3D models. Featured in multiple design newsletters and blogs.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--green);"></div>
+        <div class="timeline-date" style="color:var(--green);">October 2023</div>
+        <h3>100K Users</h3>
+        <p>Platform reaches 100,000 registered users across 45 countries. Sofia joins to lead community growth. Full shortcut reference library added.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--pink);"></div>
+        <div class="timeline-date" style="color:var(--pink);">2024 — Now</div>
+        <h3>Continuous Growth</h3>
+        <p>New tools ship weekly. Community feature requests drive roadmap. Plans for collaboration features, DWG import/export, and mobile apps in progress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="section-title gradient-green">Get in Touch</div>
+    <p class="section-subtitle">Have questions, feature requests, or just want to say hi? We'd love to hear from you.</p>
+    <div class="contact-cards">
+      <div class="contact-card">
+        <div class="contact-icon">📧</div>
+        <h4>Email Us</h4>
+        <p>hello@autocadwebstudio.com</p>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🐦</div>
+        <h4>Twitter / X</h4>
+        <p>@autocadweb</p>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🐙</div>
+        <h4>GitHub</h4>
+        <p>github.com/autocadweb</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="display:inline-flex;">
+        <div class="logo-icon" style="width:32px;height:32px;font-size:1rem;">⚙️</div>
+        <span>AutoCAD Web Studio</span>
+      </a>
+      <p>Professional browser-based CAD tools. Free forever.</p>
+    </div>
+    <div class="footer-col"><h4>Tools</h4><a href="sketch2d.html">2D Sketch</a><a href="sketch3d.html">3D Sketch</a><a href="shortcuts.html">Shortcut Keys</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="shortcuts.html">Keyboard Guide</a><a href="about.html#contact">Contact</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AutoCAD Web Studio. All rights reserved.</span>
+    <a href="privacy.html" style="color:var(--text-muted);text-decoration:none;">Privacy Policy</a>
+  </div>
+</footer>
+
+</body>
+</html>
