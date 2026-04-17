@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Sketch — AutoCAD Web Studio</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f2e; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+
+/* TOP BAR */
+.topbar {
+  height: 50px;
+  background: #141432;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  z-index: 100;
+  overflow-x: auto;
+}
+.topbar-logo { display:flex;align-items:center;gap:8px;color:#8b5cf6;font-weight:700;font-size:0.95rem;text-decoration:none;margin-right:0.5rem;white-space:nowrap; }
+.tb-sep { width:1px;height:28px;background:rgba(255,255,255,0.1);margin:0 0.25rem;flex-shrink:0; }
+.tb-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #94a3b8;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tb-btn:hover { background: rgba(139,92,246,0.15); color: #8b5cf6; border-color: rgba(139,92,246,0.3); }
+.tb-btn.active { background: rgba(139,92,246,0.2); color: #8b5cf6; border-color: rgba(139,92,246,0.5); }
+.tb-spacer { flex: 1; }
+
+/* MAIN LAYOUT */
+.editor-body { flex: 1; display: flex; overflow: hidden; }
+
+/* LEFT PANEL - Shapes */
+.left-panel {
+  width: 200px;
+  background: #141432;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.panel-header { padding: 0.75rem 1rem 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #475569; }
+.panel-body { padding: 0.5rem; }
+
+.shape-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.shape-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-align: center;
+}
+.shape-btn:hover { background: rgba(139,92,246,0.15); color: #8b5cf6; border-color: rgba(139,92,246,0.4); transform: translateY(-1px); }
+.shape-btn .icon { font-size: 1.4rem; }
+
+.panel-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 0.5rem 0; }
+
+.prop-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; gap: 0.5rem; padding: 0 0.5rem; }
+.prop-label { font-size: 0.75rem; color: #64748b; white-space: nowrap; }
+.prop-input {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  width: 80px;
+  text-align: right;
+}
+.prop-input:focus { outline: none; border-color: rgba(139,92,246,0.4); }
+input[type="color"] { width: 30px; height: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer; padding: 0; background: none; }
+input[type="range"] { width: 80px; accent-color: #8b5cf6; }
+
+/* Toggle */
+.toggle { position: relative; width: 34px; height: 18px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: #1e293b; border-radius: 10px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+.toggle-slider::before { content: ''; position: absolute; width: 12px; height: 12px; background: #64748b; border-radius: 50%; top: 2px; left: 2px; transition: 0.2s; }
+.toggle input:checked + .toggle-slider { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: #8b5cf6; }
+
+/* VIEWPORT */
+.viewport { flex: 1; position: relative; background: #060918; }
+#threeCanvas { display: block; width: 100%; height: 100%; }
+
+.viewport-overlay {
+  position: absolute;
+  top: 12px; left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+.view-badge {
+  background: rgba(10,15,40,0.8);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  color: #8b5cf6;
+  backdrop-filter: blur(10px);
+}
+
+.viewport-controls {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  display: flex;
+  gap: 6px;
+}
+.view-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(10,15,40,0.85);
+  color: #94a3b8;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+.view-btn:hover { background: rgba(139,92,246,0.2); color: #8b5cf6; border-color: rgba(139,92,246,0.4); }
+
+/* RIGHT PANEL */
+.right-panel {
+  width: 200px;
+  background: #141432;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.obj-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  margin: 2px 0.5rem;
+  transition: background 0.15s;
+}
+.obj-item:hover { background: rgba(255,255,255,0.05); }
+.obj-item.selected { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+.obj-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.obj-name { flex: 1; }
+.obj-del { opacity: 0.4; cursor: pointer; font-size: 0.85rem; }
+.obj-del:hover { opacity: 1; color: #ef4444; }
+
+/* Status */
+.statusbar {
+  height: 28px;
+  background: #0f0f2a;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 1.5rem;
+  font-size: 0.72rem;
+  color: #475569;
+  flex-shrink: 0;
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">⚙️ AutoCAD 3D Studio</a>
+  <div class="tb-sep"></div>
+  <button class="tb-btn active" id="btnOrbit" onclick="setMode('orbit')">🖱️ Orbit</button>
+  <button class="tb-btn" id="btnPan" onclick="setMode('pan')">✋ Pan</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnWireframe" onclick="toggleWireframe()">🔲 Wireframe</button>
+  <button class="tb-btn" onclick="toggleAxes()">📐 Axes</button>
+  <button class="tb-btn" onclick="toggleGrid3d()">⊞ Grid</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="resetCamera()">⊡ Reset View</button>
+  <button class="tb-btn" onclick="setCameraView('top')">⬆ Top</button>
+  <button class="tb-btn" onclick="setCameraView('front')">⬛ Front</button>
+  <button class="tb-btn" onclick="setCameraView('iso')">◈ Iso</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="deleteSelected()" style="color:#ef4444;">🗑️ Delete</button>
+  <button class="tb-btn" onclick="clearScene()" style="color:#ef4444;">⚡ Clear All</button>
+  <div class="tb-spacer"></div>
+  <span style="font-size:0.75rem;color:#475569;padding:0 0.5rem;">Objects: <span id="objCount" style="color:#8b5cf6;">0</span></span>
+</div>
+
+<!-- BODY -->
+<div class="editor-body">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-header">Add Shape</div>
+    <div class="panel-body">
+      <div class="shape-grid">
+        <button class="shape-btn" onclick="addShape('box')"><span class="icon">⬛</span>Box</button>
+        <button class="shape-btn" onclick="addShape('sphere')"><span class="icon">⚪</span>Sphere</button>
+        <button class="shape-btn" onclick="addShape('cylinder')"><span class="icon">🥫</span>Cylinder</button>
+        <button class="shape-btn" onclick="addShape('cone')"><span class="icon">🔺</span>Cone</button>
+        <button class="shape-btn" onclick="addShape('torus')"><span class="icon">🍩</span>Torus</button>
+        <button class="shape-btn" onclick="addShape('plane')"><span class="icon">▬</span>Plane</button>
+        <button class="shape-btn" onclick="addShape('pyramid')"><span class="icon">🔷</span>Pyramid</button>
+        <button class="shape-btn" onclick="addShape('capsule')"><span class="icon">💊</span>Capsule</button>
+      </div>
+    </div>
+
+    <div class="panel-sep"></div>
+    <div class="panel-header">Material</div>
+    <div class="panel-body">
+      <div class="prop-row">
+        <span class="prop-label">Color</span>
+        <input type="color" id="objColor" value="#8b5cf6" onchange="updateMaterial()">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Roughness</span>
+        <input type="range" id="roughness" min="0" max="100" value="50" onchange="updateMaterial()">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Metalness</span>
+        <input type="range" id="metalness" min="0" max="100" value="20" onchange="updateMaterial()">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Opacity</span>
+        <input type="range" id="objOpacity" min="10" max="100" value="100" onchange="updateMaterial()">
+      </div>
+    </div>
+
+    <div class="panel-sep"></div>
+    <div class="panel-header">Transform</div>
+    <div class="panel-body">
+      <div class="prop-row"><span class="prop-label">Pos X</span><input type="number" class="prop-input" id="posX" value="0" step="0.5" onchange="applyTransform()"></div>
+      <div class="prop-row"><span class="prop-label">Pos Y</span><input type="number" class="prop-input" id="posY" value="0" step="0.5" onchange="applyTransform()"></div>
+      <div class="prop-row"><span class="prop-label">Pos Z</span><input type="number" class="prop-input" id="posZ" value="0" step="0.5" onchange="applyTransform()"></div>
+      <div class="prop-row"><span class="prop-label">Rot Y°</span><input type="number" class="prop-input" id="rotY" value="0" step="15" onchange="applyTransform()"></div>
+      <div class="prop-row"><span class="prop-label">Scale</span><input type="number" class="prop-input" id="scaleUnif" value="1" step="0.1" min="0.1" onchange="applyTransform()"></div>
+    </div>
+
+    <div class="panel-sep"></div>
+    <div class="panel-header">Environment</div>
+    <div class="panel-body">
+      <div class="prop-row">
+        <span class="prop-label">Bg Color</span>
+        <input type="color" id="bgColor" value="#060918" onchange="updateBg()">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;padding:0 0.5rem 0.5rem;">
+        <button class="shape-btn" style="width:100%;flex-direction:row;justify-content:flex-start;gap:8px;padding:0.4rem 0.75rem;" onclick="setPresetBg('dark')">🌑 Dark</button>
+        <button class="shape-btn" style="width:100%;flex-direction:row;justify-content:flex-start;gap:8px;padding:0.4rem 0.75rem;" onclick="setPresetBg('blue')">🌊 Blue</button>
+        <button class="shape-btn" style="width:100%;flex-direction:row;justify-content:flex-start;gap:8px;padding:0.4rem 0.75rem;" onclick="setPresetBg('space')">🌌 Space</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEWPORT -->
+  <div class="viewport" id="viewport">
+    <canvas id="threeCanvas"></canvas>
+    <div class="viewport-overlay">
+      <div class="view-badge" id="viewLabel">Perspective — Orbit</div>
+      <div class="view-badge" id="selLabel" style="display:none;">Selected: None</div>
+    </div>
+    <div class="viewport-controls">
+      <button class="view-btn" onclick="zoom3d(1.3)" title="Zoom In">🔍</button>
+      <button class="view-btn" onclick="zoom3d(0.7)" title="Zoom Out">🔎</button>
+      <button class="view-btn" onclick="resetCamera()" title="Reset Camera">⊡</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL - Scene Hierarchy -->
+  <div class="right-panel">
+    <div class="panel-header">Scene Hierarchy</div>
+    <div id="sceneList" style="padding-bottom:0.5rem;"></div>
+
+    <div class="panel-sep"></div>
+    <div class="panel-header">Lighting</div>
+    <div class="panel-body">
+      <div class="prop-row">
+        <span class="prop-label">Ambient</span>
+        <input type="range" id="ambientIntensity" min="0" max="100" value="40" onchange="updateLights()">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Directional</span>
+        <input type="range" id="dirIntensity" min="0" max="200" value="100" onchange="updateLights()">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Light Color</span>
+        <input type="color" id="lightColor" value="#ffffff" onchange="updateLights()">
+      </div>
+    </div>
+
+    <div class="panel-sep"></div>
+    <div class="panel-header">Shortcuts</div>
+    <div style="padding:0.5rem 1rem;font-size:0.72rem;color:#475569;line-height:2;">
+      <div>Left Drag — Orbit</div>
+      <div>Right Drag — Pan</div>
+      <div>Scroll — Zoom</div>
+      <div>Click — Select</div>
+      <div><kbd style="background:#0f172a;border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:0 4px;color:#8b5cf6;">Del</kbd> Delete</div>
+      <div><kbd style="background:#0f172a;border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:0 4px;color:#8b5cf6;">F</kbd> Focus</div>
+      <div><kbd style="background:#0f172a;border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:0 4px;color:#8b5cf6;">R</kbd> Reset View</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span><span class="status-dot"></span>3D Engine Ready</span>
+  <span>Mode: <span id="modeLabel" style="color:#8b5cf6;">Orbit</span></span>
+  <span>Camera: <span id="cameraLabel" style="color:#8b5cf6;">Perspective</span></span>
+  <span style="margin-left:auto;">Three.js r128</span>
+</div>
+
+<script>
+// ===== THREE.JS SETUP =====
+const container = document.getElementById('viewport');
+const canvas3d = document.getElementById('threeCanvas');
+
+const renderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setClearColor(0x060918);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+camera.position.set(8, 6, 8);
+camera.lookAt(0, 0, 0);
+
+// ===== LIGHTS =====
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+dirLight.position.set(10, 15, 8);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 2048;
+dirLight.shadow.mapSize.height = 2048;
+scene.add(dirLight);
+
+const fillLight = new THREE.DirectionalLight(0x4466ff, 0.3);
+fillLight.position.set(-8, 5, -8);
+scene.add(fillLight);
+
+const pointLight = new THREE.PointLight(0x8b5cf6, 0.5, 30);
+pointLight.position.set(0, 8, 0);
+scene.add(pointLight);
+
+// ===== GRID =====
+let gridHelper = new THREE.GridHelper(20, 20, 0x334466, 0x1a2244);
+scene.add(gridHelper);
+
+// ===== AXES =====
+let axesHelper = new THREE.AxesHelper(3);
+scene.add(axesHelper);
+
+// ===== STATE =====
+let objects = [];
+let selectedObj = null;
+let interactionMode = 'orbit';
+let wireframeMode = false;
+
+// Orbit state
+let isOrbiting = false, isPanning3d = false;
+let prevMouse = { x: 0, y: 0 };
+let spherical = { theta: Math.PI/4, phi: Math.PI/3.5, radius: 14 };
+
+function updateCameraFromSpherical() {
+  camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+  camera.position.y = spherical.radius * Math.cos(spherical.phi);
+  camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+  camera.lookAt(0, 0, 0);
+}
+
+// ===== MOUSE =====
+canvas3d.addEventListener('mousedown', e => {
+  e.preventDefault();
+  if (e.button === 0 && interactionMode === 'orbit') { isOrbiting = true; }
+  if (e.button === 2 || (e.button === 0 && interactionMode === 'pan')) { isPanning3d = true; }
+  prevMouse = { x: e.clientX, y: e.clientY };
+
+  // Raycasting for selection
+  if (e.button === 0 && interactionMode === 'orbit') {
+    const rect = canvas3d.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    const meshes = objects.map(o => o.mesh);
+    const intersects = raycaster.intersectObjects(meshes);
+    if (intersects.length > 0) {
+      const hit = intersects[0].object;
+      const found = objects.find(o => o.mesh === hit);
+      if (found) selectObject(found);
+    } else {
+      deselectAll();
+    }
+  }
+});
+
+canvas3d.addEventListener('mousemove', e => {
+  const dx = e.clientX - prevMouse.x;
+  const dy = e.clientY - prevMouse.y;
+
+  if (isOrbiting) {
+    spherical.theta -= dx * 0.008;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi + dy * 0.008));
+    updateCameraFromSpherical();
+  }
+  if (isPanning3d) {
+    const right = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
+    right.crossVectors(camera.getWorldDirection(new THREE.Vector3()), up).normalize();
+    const panFactor = spherical.radius * 0.001;
+    camera.position.addScaledVector(right, -dx * panFactor);
+    camera.position.y += dy * panFactor;
+    camera.lookAt(0, 0, 0);
+  }
+
+  prevMouse = { x: e.clientX, y: e.clientY };
+});
+
+canvas3d.addEventListener('mouseup', () => { isOrbiting = false; isPanning3d = false; });
+canvas3d.addEventListener('mouseleave', () => { isOrbiting = false; isPanning3d = false; });
+
+canvas3d.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas3d.addEventListener('wheel', e => {
+  e.preventDefault();
+  spherical.radius *= e.deltaY > 0 ? 1.12 : 0.88;
+  spherical.radius = Math.max(2, Math.min(80, spherical.radius));
+  updateCameraFromSpherical();
+}, { passive: false });
+
+// ===== ADD SHAPE =====
+const shapeColors = [0x00d4ff, 0x8b5cf6, 0xf97316, 0x22c55e, 0xec4899, 0xeab308, 0xef4444, 0x06b6d4];
+let colorIndex = 0;
+
+function addShape(type) {
+  const color = parseInt(document.getElementById('objColor').value.replace('#',''), 16);
+  const roughness = parseInt(document.getElementById('roughness').value) / 100;
+  const metalness = parseInt(document.getElementById('metalness').value) / 100;
+  const opacity = parseInt(document.getElementById('objOpacity').value) / 100;
+
+  const mat = new THREE.MeshStandardMaterial({
+    color: color,
+    roughness: roughness,
+    metalness: metalness,
+    transparent: opacity < 1,
+    opacity: opacity
+  });
+
+  let geo, name;
+  if (type === 'box') { geo = new THREE.BoxGeometry(2, 2, 2); name = 'Box'; }
+  else if (type === 'sphere') { geo = new THREE.SphereGeometry(1.2, 32, 32); name = 'Sphere'; }
+  else if (type === 'cylinder') { geo = new THREE.CylinderGeometry(1, 1, 2.5, 32); name = 'Cylinder'; }
+  else if (type === 'cone') { geo = new THREE.ConeGeometry(1.2, 2.5, 32); name = 'Cone'; }
+  else if (type === 'torus') { geo = new THREE.TorusGeometry(1.2, 0.4, 16, 100); name = 'Torus'; }
+  else if (type === 'plane') { geo = new THREE.PlaneGeometry(3, 3); name = 'Plane'; }
+  else if (type === 'pyramid') { geo = new THREE.ConeGeometry(1.5, 2.5, 4); name = 'Pyramid'; }
+  else if (type === 'capsule') {
+    geo = new THREE.CapsuleGeometry(0.8, 1.5, 8, 16);
+    name = 'Capsule';
+  }
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  // Spread new objects around
+  const spread = objects.length * 0.5;
+  mesh.position.set(
+    (Math.random() - 0.5) * 6,
+    1 + Math.random() * 0.5,
+    (Math.random() - 0.5) * 6
+  );
+
+  if (wireframeMode) mat.wireframe = true;
+
+  scene.add(mesh);
+
+  const id = Date.now();
+  const colorHex = '#' + color.toString(16).padStart(6,'0');
+  objects.push({ mesh, name: `${name} ${objects.length+1}`, type, id, colorHex });
+
+  colorIndex = (colorIndex+1) % shapeColors.length;
+  updateSceneList();
+  selectObject(objects[objects.length-1]);
+  document.getElementById('objCount').textContent = objects.length;
+}
+
+// ===== SELECT =====
+function selectObject(obj) {
+  // Reset previous outline
+  objects.forEach(o => {
+    if (o.mesh.material.emissive) o.mesh.material.emissive.setHex(0x000000);
+  });
+  selectedObj = obj;
+  if (obj) {
+    obj.mesh.material.emissive.setHex(0x222222);
+    document.getElementById('selLabel').style.display = 'block';
+    document.getElementById('selLabel').textContent = 'Selected: ' + obj.name;
+    document.getElementById('posX').value = obj.mesh.position.x.toFixed(2);
+    document.getElementById('posY').value = obj.mesh.position.y.toFixed(2);
+    document.getElementById('posZ').value = obj.mesh.position.z.toFixed(2);
+    document.getElementById('rotY').value = (obj.mesh.rotation.y * 180 / Math.PI).toFixed(0);
+    document.getElementById('scaleUnif').value = obj.mesh.scale.x.toFixed(2);
+  }
+  updateSceneList();
+}
+
+function deselectAll() {
+  objects.forEach(o => { if (o.mesh.material.emissive) o.mesh.material.emissive.setHex(0x000000); });
+  selectedObj = null;
+  document.getElementById('selLabel').style.display = 'none';
+  updateSceneList();
+}
+
+// ===== SCENE LIST =====
+function updateSceneList() {
+  const list = document.getElementById('sceneList');
+  list.innerHTML = objects.length === 0 ? '<div style="padding:0.75rem 1rem;font-size:0.78rem;color:#334155;text-align:center;">No objects yet.<br>Add shapes from the left panel.</div>' : '';
+  objects.forEach((obj, i) => {
+    const item = document.createElement('div');
+    item.className = 'obj-item' + (obj === selectedObj ? ' selected' : '');
+    item.innerHTML = `
+      <div class="obj-dot" style="background:${obj.colorHex};"></div>
+      <span class="obj-name">${obj.name}</span>
+      <span class="obj-del" onclick="removeObject(${i})">✕</span>
+    `;
+    item.addEventListener('click', e => { if (!e.target.classList.contains('obj-del')) selectObject(obj); });
+    list.appendChild(item);
+  });
+}
+
+function removeObject(i) {
+  scene.remove(objects[i].mesh);
+  if (selectedObj === objects[i]) selectedObj = null;
+  objects.splice(i, 1);
+  updateSceneList();
+  document.getElementById('objCount').textContent = objects.length;
+}
+
+function deleteSelected() {
+  if (!selectedObj) return;
+  const i = objects.indexOf(selectedObj);
+  if (i !== -1) removeObject(i);
+  document.getElementById('selLabel').style.display = 'none';
+}
+
+function clearScene() {
+  if (objects.length && !confirm('Remove all objects?')) return;
+  objects.forEach(o => scene.remove(o.mesh));
+  objects = []; selectedObj = null;
+  updateSceneList();
+  document.getElementById('objCount').textContent = 0;
+  document.getElementById('selLabel').style.display = 'none';
+}
+
+// ===== TRANSFORM =====
+function applyTransform() {
+  if (!selectedObj) return;
+  selectedObj.mesh.position.set(
+    parseFloat(document.getElementById('posX').value)||0,
+    parseFloat(document.getElementById('posY').value)||0,
+    parseFloat(document.getElementById('posZ').value)||0
+  );
+  selectedObj.mesh.rotation.y = (parseFloat(document.getElementById('rotY').value)||0) * Math.PI / 180;
+  const s = parseFloat(document.getElementById('scaleUnif').value)||1;
+  selectedObj.mesh.scale.set(s, s, s);
+}
+
+// ===== MATERIAL =====
+function updateMaterial() {
+  if (!selectedObj) return;
+  const color = parseInt(document.getElementById('objColor').value.replace('#',''), 16);
+  const roughness = parseInt(document.getElementById('roughness').value) / 100;
+  const metalness = parseInt(document.getElementById('metalness').value) / 100;
+  const opacity = parseInt(document.getElementById('objOpacity').value) / 100;
+  selectedObj.mesh.material.color.setHex(color);
+  selectedObj.mesh.material.roughness = roughness;
+  selectedObj.mesh.material.metalness = metalness;
+  selectedObj.mesh.material.transparent = opacity < 1;
+  selectedObj.mesh.material.opacity = opacity;
+  selectedObj.colorHex = '#' + color.toString(16).padStart(6,'0');
+  updateSceneList();
+}
+
+// ===== LIGHTS =====
+function updateLights() {
+  ambientLight.intensity = parseInt(document.getElementById('ambientIntensity').value) / 100;
+  dirLight.intensity = parseInt(document.getElementById('dirIntensity').value) / 100;
+  const lc = parseInt(document.getElementById('lightColor').value.replace('#',''), 16);
+  dirLight.color.setHex(lc);
+}
+
+// ===== WIREFRAME =====
+function toggleWireframe() {
+  wireframeMode = !wireframeMode;
+  objects.forEach(o => o.mesh.material.wireframe = wireframeMode);
+  document.getElementById('btnWireframe').classList.toggle('active', wireframeMode);
+}
+
+// ===== AXES/GRID =====
+function toggleAxes() {
+  axesHelper.visible = !axesHelper.visible;
+}
+
+function toggleGrid3d() {
+  gridHelper.visible = !gridHelper.visible;
+}
+
+// ===== CAMERA VIEWS =====
+function setCameraView(view) {
+  if (view === 'top') {
+    spherical.theta = 0; spherical.phi = 0.01;
+    document.getElementById('cameraLabel').textContent = 'Top';
+  } else if (view === 'front') {
+    spherical.theta = 0; spherical.phi = Math.PI/2;
+    document.getElementById('cameraLabel').textContent = 'Front';
+  } else if (view === 'iso') {
+    spherical.theta = Math.PI/4; spherical.phi = Math.PI/3.5;
+    document.getElementById('cameraLabel').textContent = 'Isometric';
+  }
+  updateCameraFromSpherical();
+  document.getElementById('viewLabel').textContent = document.getElementById('cameraLabel').textContent + ' — ' + (interactionMode === 'orbit' ? 'Orbit' : 'Pan');
+}
+
+function resetCamera() {
+  spherical = { theta: Math.PI/4, phi: Math.PI/3.5, radius: 14 };
+  updateCameraFromSpherical();
+  document.getElementById('cameraLabel').textContent = 'Perspective';
+}
+
+function zoom3d(factor) {
+  spherical.radius = Math.max(2, Math.min(80, spherical.radius * factor));
+  updateCameraFromSpherical();
+}
+
+// ===== MODE =====
+function setMode(m) {
+  interactionMode = m;
+  document.getElementById('btnOrbit').classList.toggle('active', m==='orbit');
+  document.getElementById('btnPan').classList.toggle('active', m==='pan');
+  document.getElementById('modeLabel').textContent = m === 'orbit' ? 'Orbit' : 'Pan';
+  document.getElementById('viewLabel').textContent = document.getElementById('cameraLabel').textContent + ' — ' + (m === 'orbit' ? 'Orbit' : 'Pan');
+  canvas3d.style.cursor = m === 'pan' ? 'move' : 'default';
+}
+
+// ===== BG =====
+function updateBg() {
+  const c = parseInt(document.getElementById('bgColor').value.replace('#',''), 16);
+  renderer.setClearColor(c);
+  scene.fog = new THREE.FogExp2(c, 0.04);
+}
+
+function setPresetBg(preset) {
+  const presets = { dark: '#060918', blue: '#040c20', space: '#000005' };
+  document.getElementById('bgColor').value = presets[preset];
+  updateBg();
+}
+
+// ===== RESIZE =====
+function resizeRenderer() {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+window.addEventListener('resize', resizeRenderer);
+resizeRenderer();
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
+  if (e.key === 'f' || e.key === 'F') {
+    if (selectedObj) {
+      const p = selectedObj.mesh.position;
+      spherical.radius = 8;
+      camera.lookAt(p);
+    }
+  }
+  if (e.key === 'r' || e.key === 'R') resetCamera();
+});
+
+// ===== ANIMATE =====
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+// Initial demo scene
+function setupDemoScene() {
+  const colors = [0x00d4ff, 0x8b5cf6, 0xf97316, 0x22c55e, 0xec4899];
+  const types = ['box', 'sphere', 'cylinder', 'torus', 'cone'];
+  types.forEach((t, i) => {
+    document.getElementById('objColor').value = '#' + colors[i].toString(16).padStart(6,'0');
+    addShape(t);
+    const obj = objects[objects.length-1];
+    const angle = (i / types.length) * Math.PI * 2;
+    const r = 4;
+    obj.mesh.position.set(Math.cos(angle)*r, 1, Math.sin(angle)*r);
+  });
+  deselectAll();
+}
+
+updateCameraFromSpherical();
+animate();
+
+// Floor
+const floorGeo = new THREE.PlaneGeometry(30, 30);
+const floorMat = new THREE.MeshStandardMaterial({ color: 0x0d1a2d, roughness: 1, metalness: 0 });
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x = -Math.PI/2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+scene.fog = new THREE.FogExp2(0x060918, 0.04);
+
+setTimeout(setupDemoScene, 200);
+</script>
+</body>
+</html>

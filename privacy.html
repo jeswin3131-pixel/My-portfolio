@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — AutoCAD Web Studio</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.privacy-hero {
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 70%);
+  border-bottom: 1px solid var(--border);
+}
+.privacy-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 0.75rem; }
+.privacy-hero p { color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+.last-updated { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 50px; padding: 0.35rem 1rem; font-size: 0.8rem; color: var(--green); margin-top: 1rem; }
+
+/* LAYOUT */
+.privacy-layout { max-width: 1100px; margin: 4rem auto; padding: 0 2rem; display: grid; grid-template-columns: 240px 1fr; gap: 3rem; align-items: start; }
+
+/* TOC */
+.toc {
+  position: sticky;
+  top: calc(var(--nav-height) + 1.5rem);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.toc h3 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 1rem; }
+.toc a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+}
+.toc a:hover { background: rgba(34,197,94,0.1); color: var(--green); }
+.toc a.active { background: rgba(34,197,94,0.1); color: var(--green); }
+.toc-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+
+/* CONTENT */
+.privacy-sections { }
+.priv-section {
+  margin-bottom: 3.5rem;
+  padding-bottom: 3.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.priv-section:last-child { border-bottom: none; margin-bottom: 0; }
+.section-num {
+  display: inline-flex;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.3);
+  align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 1rem;
+}
+.priv-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 1.25rem; }
+.priv-section p { color: var(--text-muted); line-height: 1.9; margin-bottom: 1rem; font-size: 0.95rem; }
+.priv-section p:last-child { margin-bottom: 0; }
+.priv-section h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--text); }
+.priv-section ul { list-style: none; padding: 0; margin: 0.75rem 0; }
+.priv-section ul li {
+  display: flex;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0.4rem 0;
+  line-height: 1.7;
+}
+.priv-section ul li::before { content: '→'; color: var(--green); flex-shrink: 0; margin-top: 1px; }
+
+.highlight-box {
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+.highlight-box p { color: var(--text) !important; margin: 0 !important; font-size: 0.9rem; }
+.highlight-box .hl-icon { font-size: 1.2rem; margin-bottom: 0.5rem; display: block; }
+
+.data-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+.data-table th {
+  background: var(--bg-card);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--green);
+  border-bottom: 2px solid rgba(34,197,94,0.2);
+}
+.data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Contact box */
+.contact-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+.contact-box h3 { margin-bottom: 0.75rem; }
+.contact-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.contact-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 50px;
+  padding: 0.6rem 1.5rem;
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.contact-email:hover { background: rgba(34,197,94,0.2); }
+
+@media (max-width: 768px) {
+  .privacy-layout { grid-template-columns: 1fr; }
+  .toc { position: static; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">⚙️</div>
+    <span>AutoCAD Web Studio</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="sketch2d.html">2D Sketch</a></li>
+    <li><a href="sketch3d.html">3D Sketch</a></li>
+    <li><a href="shortcuts.html">Shortcuts</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sketch2d.html" class="nav-cta">Start Drawing</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+<!-- HERO -->
+<div class="privacy-hero">
+  <div class="badge badge-green" style="margin-bottom:1rem;">🔒 Your Privacy Matters</div>
+  <h1>Privacy <span class="gradient-green">Policy</span></h1>
+  <p>We are committed to protecting your privacy. Here's exactly what we collect, how we use it, and your rights.</p>
+  <div class="last-updated">📅 Last updated: December 15, 2024</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="privacy-layout">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h3>Contents</h3>
+    <a href="#overview" class="active"><span class="toc-num">1</span>Overview</a>
+    <a href="#data-collect"><span class="toc-num">2</span>Data We Collect</a>
+    <a href="#how-we-use"><span class="toc-num">3</span>How We Use Data</a>
+    <a href="#data-storage"><span class="toc-num">4</span>Data Storage</a>
+    <a href="#cookies"><span class="toc-num">5</span>Cookies</a>
+    <a href="#third-party"><span class="toc-num">6</span>Third Parties</a>
+    <a href="#your-rights"><span class="toc-num">7</span>Your Rights</a>
+    <a href="#children"><span class="toc-num">8</span>Children</a>
+    <a href="#security"><span class="toc-num">9</span>Security</a>
+    <a href="#changes"><span class="toc-num">10</span>Policy Changes</a>
+    <a href="#contact-priv"><span class="toc-num">11</span>Contact Us</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="privacy-sections">
+
+    <div class="priv-section" id="overview">
+      <div class="section-num">1</div>
+      <h2>Overview</h2>
+      <div class="highlight-box">
+        <span class="hl-icon">🎯</span>
+        <p><strong>The short version:</strong> AutoCAD Web Studio is a client-side application. Your drawings and designs are processed entirely in your browser and never uploaded to our servers. We collect minimal usage analytics to improve the product.</p>
+      </div>
+      <p>This Privacy Policy explains how AutoCAD Web Studio ("we," "us," or "our") collects, uses, and protects information when you use our web application available at autocadwebstudio.com and related subdomains (the "Service").</p>
+      <p>By using the Service, you agree to the collection and use of information in accordance with this policy. If you do not agree with any part of this policy, you should discontinue use of the Service.</p>
+      <p>This policy is effective as of December 15, 2024 and applies to all users of the Service globally.</p>
+    </div>
+
+    <div class="priv-section" id="data-collect">
+      <div class="section-num">2</div>
+      <h2>Data We Collect</h2>
+      <p>We are committed to collecting the minimum data necessary to provide and improve the Service.</p>
+      <h3>2.1 Data We DO NOT Collect</h3>
+      <ul>
+        <li>Your drawings, sketches, or design files — these never leave your browser</li>
+        <li>Personal identification unless you create an account (account feature not yet available)</li>
+        <li>Payment information (the Service is free)</li>
+        <li>Location data beyond country-level analytics</li>
+        <li>Microphone, camera, or other device sensor data</li>
+      </ul>
+      <h3>2.2 Data We DO Collect (Automatically)</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Data Type</th><th>What We Collect</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Usage Analytics</td>
+            <td>Page views, feature usage frequency, session duration</td>
+            <td>Understand which tools are used most to prioritize development</td>
+          </tr>
+          <tr>
+            <td>Technical Data</td>
+            <td>Browser type, OS, screen resolution, WebGL capabilities</td>
+            <td>Ensure compatibility and performance optimization</td>
+          </tr>
+          <tr>
+            <td>Error Logs</td>
+            <td>JavaScript errors, performance metrics (anonymized)</td>
+            <td>Fix bugs and improve stability</td>
+          </tr>
+          <tr>
+            <td>Aggregate Statistics</td>
+            <td>Country-level traffic, popular entry pages</td>
+            <td>Understand our global user base</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>All analytics data is anonymized. We do not use it to build individual user profiles or for advertising purposes.</p>
+    </div>
+
+    <div class="priv-section" id="how-we-use">
+      <div class="section-num">3</div>
+      <h2>How We Use Your Data</h2>
+      <p>We use the limited data we collect for the following purposes:</p>
+      <ul>
+        <li><strong>Improving the Service:</strong> Understanding which drawing tools, features, and workflows are most valuable helps us prioritize development.</li>
+        <li><strong>Bug Fixing:</strong> Anonymized error reports help us identify and fix technical issues faster.</li>
+        <li><strong>Performance Optimization:</strong> Technical device data helps us ensure the application runs smoothly across different browsers and hardware configurations.</li>
+        <li><strong>Security:</strong> Basic traffic analysis helps us detect and respond to abuse, DDoS attacks, or malicious usage patterns.</li>
+        <li><strong>Communication:</strong> If you contact us via email or our contact form, we use your email address to respond to your inquiry only.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>⛔ <strong>We do not:</strong> sell your data, share it with advertisers, use it for behavioral profiling, or disclose it to third parties except as described in Section 6.</p>
+      </div>
+    </div>
+
+    <div class="priv-section" id="data-storage">
+      <div class="section-num">4</div>
+      <h2>Data Storage & Your Designs</h2>
+      <h3>4.1 Your Drawings Stay on Your Device</h3>
+      <p>AutoCAD Web Studio operates as a client-side application. All drawing and modeling operations are performed locally in your browser using HTML5 Canvas and WebGL (Three.js). Your designs are:</p>
+      <ul>
+        <li>Processed entirely in your browser's memory</li>
+        <li>Never transmitted to our servers</li>
+        <li>Exported directly from your browser to your local device when you save</li>
+        <li>Deleted from memory when you close the browser tab</li>
+      </ul>
+      <h3>4.2 Local Storage</h3>
+      <p>We may use your browser's localStorage to save user preferences (such as grid settings, color theme, or tool preferences). This data:</p>
+      <ul>
+        <li>Stays only on your device and browser</li>
+        <li>Is never synced to our servers</li>
+        <li>Can be cleared at any time via your browser settings</li>
+      </ul>
+      <h3>4.3 Server-Side Data Retention</h3>
+      <p>Analytics data (see Section 2.2) is retained for a maximum of 24 months and then permanently deleted. Error logs are retained for 90 days. We do not retain any drawing content as we never receive it.</p>
+    </div>
+
+    <div class="priv-section" id="cookies">
+      <div class="section-num">5</div>
+      <h2>Cookies & Tracking</h2>
+      <p>We use a minimal number of cookies. Here is a full breakdown:</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Cookie Name</th><th>Type</th><th>Purpose</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>_session</td>
+            <td>Functional</td>
+            <td>Maintain session state for preferences</td>
+            <td>Session (deleted on close)</td>
+          </tr>
+          <tr>
+            <td>_analytics</td>
+            <td>Analytics</td>
+            <td>Anonymized page view counting</td>
+            <td>1 year</td>
+          </tr>
+          <tr>
+            <td>_theme</td>
+            <td>Functional</td>
+            <td>Remember user's UI preferences</td>
+            <td>1 year</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>We do not use advertising cookies, tracking pixels, or third-party behavioral tracking tools. You can disable cookies in your browser settings, though some functional features may be affected.</p>
+    </div>
+
+    <div class="priv-section" id="third-party">
+      <div class="section-num">6</div>
+      <h2>Third-Party Services</h2>
+      <p>We use a small number of trusted third-party services to deliver the application. Each has access only to the minimum data required for their function:</p>
+      <ul>
+        <li><strong>Cloudflare (CDN):</strong> Delivers static assets and provides DDoS protection. May log IP addresses per their privacy policy. <a href="#" style="color:var(--green);">cloudflare.com/privacy</a></li>
+        <li><strong>Fathom Analytics:</strong> Privacy-first, GDPR-compliant analytics. Does not use cookies or track individuals. <a href="#" style="color:var(--green);">usefathom.com/privacy</a></li>
+        <li><strong>Three.js CDN (cdnjs.cloudflare.com):</strong> Serves the Three.js library for 3D rendering. No data collection.</li>
+        <li><strong>Sentry (Error Tracking):</strong> Receives anonymized error reports. IP addresses are stripped before storage. <a href="#" style="color:var(--green);">sentry.io/privacy</a></li>
+      </ul>
+      <p>We do not use Google Analytics, Meta Pixel, or any advertising network tracking tools.</p>
+    </div>
+
+    <div class="priv-section" id="your-rights">
+      <div class="section-num">7</div>
+      <h2>Your Rights</h2>
+      <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+      <ul>
+        <li><strong>Right to Access:</strong> Request a copy of any personal data we hold about you</li>
+        <li><strong>Right to Deletion:</strong> Request deletion of your personal data from our systems</li>
+        <li><strong>Right to Correction:</strong> Request correction of inaccurate personal data</li>
+        <li><strong>Right to Portability:</strong> Request your data in a machine-readable format</li>
+        <li><strong>Right to Object:</strong> Object to processing of your data for analytics purposes</li>
+        <li><strong>Right to Opt-Out:</strong> Opt out of any analytics tracking via your browser settings or our cookie banner</li>
+      </ul>
+      <p>For EU/EEA users, we comply with the General Data Protection Regulation (GDPR). For California residents, we comply with the California Consumer Privacy Act (CCPA). To exercise any of these rights, contact us at the email address in Section 11.</p>
+      <p>We will respond to all legitimate requests within 30 days. We may ask you to verify your identity before fulfilling certain requests.</p>
+    </div>
+
+    <div class="priv-section" id="children">
+      <div class="section-num">8</div>
+      <h2>Children's Privacy</h2>
+      <p>AutoCAD Web Studio is designed for general audiences and is frequently used in educational settings. We take children's privacy seriously.</p>
+      <p>We do not knowingly collect personal information from children under the age of 13 (or the applicable age of digital consent in your jurisdiction). The Service does not require account creation or personal information submission to use.</p>
+      <p>If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately at the email in Section 11. We will promptly delete any such information.</p>
+      <div class="highlight-box">
+        <p>🏫 <strong>For educators:</strong> Since AutoCAD Web Studio processes all drawings locally with no account required, it is safe and compliant for use in educational environments including K-12 schools. No student data is collected or stored by us.</p>
+      </div>
+    </div>
+
+    <div class="priv-section" id="security">
+      <div class="section-num">9</div>
+      <h2>Security</h2>
+      <p>We take the security of your data and the Service seriously. Our security measures include:</p>
+      <ul>
+        <li>All data in transit is encrypted using TLS 1.3</li>
+        <li>No drawing or design data is stored on our servers (by design)</li>
+        <li>Regular security audits and penetration testing</li>
+        <li>Strict access controls — only essential team members can access analytics dashboards</li>
+        <li>No passwords to breach (no account system)</li>
+        <li>Content Security Policy (CSP) headers to prevent XSS attacks</li>
+      </ul>
+      <p>However, no system is completely secure. We cannot guarantee the absolute security of information transmitted over the internet. In the unlikely event of a security incident affecting user data, we will notify affected users within 72 hours as required by GDPR.</p>
+    </div>
+
+    <div class="priv-section" id="changes">
+      <div class="section-num">10</div>
+      <h2>Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our practices or applicable law. When we make changes:</p>
+      <ul>
+        <li>We will update the "Last updated" date at the top of this page</li>
+        <li>For material changes, we will display a notice on the main application page for 30 days</li>
+        <li>We will never retroactively change how we handle data already collected without explicit consent</li>
+      </ul>
+      <p>We encourage you to review this Privacy Policy periodically. Continued use of the Service after changes are posted constitutes your acceptance of the updated policy.</p>
+    </div>
+
+    <div class="priv-section" id="contact-priv">
+      <div class="section-num">11</div>
+      <h2>Contact Us</h2>
+      <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please don't hesitate to contact us. We aim to respond to all privacy-related inquiries within 5 business days.</p>
+      <div class="contact-box">
+        <h3>Privacy Questions?</h3>
+        <p>Our privacy team is here to help. Reach out anytime and we'll respond promptly.</p>
+        <a href="mailto:privacy@autocadwebstudio.com" class="contact-email">📧 privacy@autocadwebstudio.com</a>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:1.25rem;">AutoCAD Web Studio · Attn: Privacy Team · 123 Design Street, San Francisco, CA 94105, USA</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="display:inline-flex;">
+        <div class="logo-icon" style="width:32px;height:32px;font-size:1rem;">⚙️</div>
+        <span>AutoCAD Web Studio</span>
+      </a>
+      <p>Professional browser-based CAD tools. Free forever.</p>
+    </div>
+    <div class="footer-col"><h4>Tools</h4><a href="sketch2d.html">2D Sketch</a><a href="sketch3d.html">3D Sketch</a><a href="shortcuts.html">Shortcut Keys</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="shortcuts.html">Keyboard Guide</a><a href="about.html#contact">Contact</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AutoCAD Web Studio. All rights reserved.</span>
+    <span style="display:flex;gap:1rem;"><a href="privacy.html" style="color:var(--text-muted);text-decoration:none;">Privacy</a><a href="about.html" style="color:var(--text-muted);text-decoration:none;">About</a></span>
+  </div>
+</footer>
+
+<script>
+// Active TOC on scroll
+const sections = document.querySelectorAll('.priv-section');
+const tocLinks = document.querySelectorAll('.toc a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

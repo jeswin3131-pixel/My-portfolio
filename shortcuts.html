@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shortcut Keys — AutoCAD Web Studio</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.shortcuts-hero {
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(249,115,22,0.08) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+}
+.shortcuts-hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.75rem; }
+.shortcuts-hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem; }
+
+/* SEARCH */
+.search-bar {
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  color: var(--text);
+  font-size: 1rem;
+  padding: 0.85rem 1.5rem 0.85rem 3.5rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(249,115,22,0.1); }
+.search-icon {
+  position: absolute;
+  left: 1.25rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+.search-count {
+  position: absolute;
+  right: 1.25rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* TABS */
+.tab-bar {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  padding: 0 2rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tab-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.tab-btn.active { background: rgba(249,115,22,0.15); color: var(--orange); border-color: rgba(249,115,22,0.4); }
+
+/* CONTENT */
+.shortcuts-content { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+
+.category-section { margin-bottom: 3rem; }
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+.cat-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.cat-info h2 { font-size: 1.15rem; font-weight: 700; }
+.cat-info p { font-size: 0.82rem; color: var(--text-muted); }
+.cat-count {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 0.2rem 0.75rem;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+}
+
+.shortcuts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  gap: 1rem;
+}
+.shortcut-item:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(249,115,22,0.2);
+  transform: translateX(2px);
+}
+.shortcut-item.hidden { display: none; }
+.shortcut-label { font-size: 0.88rem; color: var(--text); flex: 1; }
+.shortcut-keys { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 6px;
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 3px solid rgba(0,0,0,0.5);
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--text);
+  white-space: nowrap;
+}
+.key.mod { color: var(--orange); border-color: rgba(249,115,22,0.25); }
+.key.special { color: var(--cyan); border-color: rgba(0,212,255,0.25); }
+.plus { font-size: 0.7rem; color: var(--text-muted); }
+
+/* KEYBOARD VISUAL */
+.keyboard-section {
+  max-width: 900px;
+  margin: 0 auto 4rem;
+  padding: 0 2rem;
+}
+.keyboard-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+.keyboard-visual h3 { text-align: center; margin-bottom: 1.5rem; font-size: 1rem; color: var(--text-muted); }
+.kb-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; }
+.kb-key {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #1a1a3e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 3px solid rgba(0,0,0,0.5);
+  border-radius: 6px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  cursor: default;
+  transition: all 0.15s;
+  color: #64748b;
+}
+.kb-key.highlight-orange { background: rgba(249,115,22,0.2); border-color: rgba(249,115,22,0.5); color: var(--orange); }
+.kb-key.highlight-cyan { background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.4); color: var(--cyan); }
+.kb-key.highlight-purple { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.4); color: var(--purple); }
+.kb-key.highlight-green { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: var(--green); }
+.kb-key .top-label { font-size: 0.5rem; color: #475569; }
+.kb-key.wide { min-width: 60px; }
+.kb-key.wider { min-width: 80px; }
+.kb-key.widest { min-width: 200px; }
+
+.kb-legend { display: flex; gap: 1.5rem; justify-content: center; margin-top: 1.25rem; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+/* No results */
+.no-results { text-align: center; padding: 3rem; color: var(--text-muted); }
+
+@media (max-width: 768px) {
+  .shortcuts-grid { grid-template-columns: 1fr; }
+  .keyboard-visual { padding: 1rem; overflow-x: auto; }
+  .kb-key { min-width: 28px; height: 28px; font-size: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">⚙️</div>
+    <span>AutoCAD Web Studio</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="sketch2d.html">2D Sketch</a></li>
+    <li><a href="sketch3d.html">3D Sketch</a></li>
+    <li><a href="shortcuts.html" class="active">Shortcuts</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sketch2d.html" class="nav-cta">Start Drawing</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+<!-- HERO -->
+<div class="shortcuts-hero">
+  <div class="badge badge-orange" style="margin-bottom:1rem;">⌨️ Complete Reference</div>
+  <h1>Keyboard <span class="gradient-orange">Shortcuts</span></h1>
+  <p>Master AutoCAD-standard shortcuts to design 3× faster. Organized by workflow, searchable, printable.</p>
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search shortcuts... (e.g. Line, Copy, Zoom)" oninput="searchShortcuts()">
+    <span class="search-count" id="searchCount"></span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="filterCat('all',this)">All Shortcuts</button>
+  <button class="tab-btn" onclick="filterCat('general',this)">⚡ General</button>
+  <button class="tab-btn" onclick="filterCat('drawing',this)">✏️ Drawing</button>
+  <button class="tab-btn" onclick="filterCat('editing',this)">✂️ Editing</button>
+  <button class="tab-btn" onclick="filterCat('view',this)">👁️ View</button>
+  <button class="tab-btn" onclick="filterCat('dimension',this)">📐 Dimensions</button>
+  <button class="tab-btn" onclick="filterCat('layer',this)">🗂️ Layers</button>
+  <button class="tab-btn" onclick="filterCat('3d',this)">🧊 3D</button>
+</div>
+
+<!-- KEYBOARD VISUAL -->
+<div class="keyboard-section" style="margin-top:3rem;">
+  <div class="keyboard-visual">
+    <h3>Key Color Guide — Quick Access Tools</h3>
+    <div class="kb-row">
+      <div class="kb-key wide">Esc</div>
+      <div class="kb-key highlight-orange">F1<div class="top-label">Help</div></div>
+      <div class="kb-key highlight-orange">F2<div class="top-label">Text</div></div>
+      <div class="kb-key highlight-cyan">F3<div class="top-label">Snap</div></div>
+      <div class="kb-key highlight-orange">F4</div>
+      <div class="kb-key highlight-cyan">F5</div>
+      <div class="kb-key highlight-cyan">F6<div class="top-label">UCS</div></div>
+      <div class="kb-key highlight-cyan">F7<div class="top-label">Grid</div></div>
+      <div class="kb-key highlight-green">F8<div class="top-label">Ortho</div></div>
+      <div class="kb-key highlight-cyan">F9<div class="top-label">Snap</div></div>
+      <div class="kb-key highlight-cyan">F10</div>
+      <div class="kb-key highlight-cyan">F11</div>
+      <div class="kb-key highlight-orange">F12</div>
+    </div>
+    <div class="kb-row" style="margin-top:8px;">
+      <div class="kb-key">`</div>
+      <div class="kb-key highlight-orange">1</div>
+      <div class="kb-key highlight-orange">2</div>
+      <div class="kb-key highlight-orange">3</div>
+      <div class="kb-key">4</div>
+      <div class="kb-key">5</div>
+      <div class="kb-key">6</div>
+      <div class="kb-key">7</div>
+      <div class="kb-key">8</div>
+      <div class="kb-key">9</div>
+      <div class="kb-key">0</div>
+      <div class="kb-key">-</div>
+      <div class="kb-key">=</div>
+      <div class="kb-key wider">⌫ Back</div>
+    </div>
+    <div class="kb-row">
+      <div class="kb-key wider">Tab</div>
+      <div class="kb-key highlight-cyan">Q<div class="top-label">Quit</div></div>
+      <div class="kb-key highlight-orange">W<div class="top-label">Wblock</div></div>
+      <div class="kb-key highlight-orange">E<div class="top-label">Ellipse</div></div>
+      <div class="kb-key highlight-orange">R<div class="top-label">Rect</div></div>
+      <div class="kb-key highlight-orange">T<div class="top-label">Text</div></div>
+      <div class="kb-key highlight-orange">Y<div class="top-label">Array</div></div>
+      <div class="kb-key highlight-orange">U<div class="top-label">Undo</div></div>
+      <div class="kb-key highlight-orange">I<div class="top-label">Insert</div></div>
+      <div class="kb-key highlight-orange">O<div class="top-label">Offset</div></div>
+      <div class="kb-key highlight-orange">P<div class="top-label">Pan</div></div>
+      <div class="kb-key">[</div>
+      <div class="kb-key">]</div>
+      <div class="kb-key">\</div>
+    </div>
+    <div class="kb-row">
+      <div class="kb-key wider">Caps</div>
+      <div class="kb-key highlight-orange">A<div class="top-label">Arc</div></div>
+      <div class="kb-key highlight-orange">S<div class="top-label">Stretch</div></div>
+      <div class="kb-key highlight-orange">D<div class="top-label">Dim</div></div>
+      <div class="kb-key highlight-orange">F<div class="top-label">Fillet</div></div>
+      <div class="kb-key highlight-orange">G<div class="top-label">Group</div></div>
+      <div class="kb-key highlight-orange">H<div class="top-label">Hatch</div></div>
+      <div class="kb-key highlight-orange">J<div class="top-label">Join</div></div>
+      <div class="kb-key highlight-orange">K</div>
+      <div class="kb-key highlight-orange">L<div class="top-label">Line</div></div>
+      <div class="kb-key">;</div>
+      <div class="kb-key">'</div>
+      <div class="kb-key wide">Enter ↵</div>
+    </div>
+    <div class="kb-row">
+      <div class="kb-key wider">⇧ Shift</div>
+      <div class="kb-key highlight-orange">Z<div class="top-label">Undo</div></div>
+      <div class="kb-key highlight-orange">X<div class="top-label">Erase</div></div>
+      <div class="kb-key highlight-orange">C<div class="top-label">Circle</div></div>
+      <div class="kb-key highlight-orange">V<div class="top-label">View</div></div>
+      <div class="kb-key highlight-orange">B<div class="top-label">Block</div></div>
+      <div class="kb-key highlight-orange">N</div>
+      <div class="kb-key highlight-orange">M<div class="top-label">Move</div></div>
+      <div class="kb-key">,</div>
+      <div class="kb-key">.</div>
+      <div class="kb-key">/</div>
+      <div class="kb-key wider">⇧ Shift</div>
+    </div>
+    <div class="kb-row">
+      <div class="kb-key wider">Ctrl</div>
+      <div class="kb-key wide">Alt</div>
+      <div class="kb-key widest">Space — Pan</div>
+      <div class="kb-key wide">Alt</div>
+      <div class="kb-key wider">Ctrl</div>
+    </div>
+
+    <div class="kb-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(249,115,22,0.7);"></div>Drawing & Editing</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(0,212,255,0.7);"></div>View & Navigation</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(34,197,94,0.7);"></div>Mode Toggle</div>
+    </div>
+  </div>
+</div>
+
+<!-- SHORTCUTS CONTENT -->
+<div class="shortcuts-content" id="shortcutsContent">
+  <div id="noResults" class="no-results" style="display:none;">
+    <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
+    <h3>No shortcuts found</h3>
+    <p>Try a different search term.</p>
+  </div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="display:inline-flex;">
+        <div class="logo-icon" style="width:32px;height:32px;font-size:1rem;">⚙️</div>
+        <span>AutoCAD Web Studio</span>
+      </a>
+      <p>Professional browser-based CAD tools. Free forever.</p>
+    </div>
+    <div class="footer-col"><h4>Tools</h4><a href="sketch2d.html">2D Sketch</a><a href="sketch3d.html">3D Sketch</a><a href="shortcuts.html">Shortcut Keys</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="privacy.html">Privacy Policy</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="shortcuts.html">Keyboard Guide</a><a href="about.html#contact">Contact</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AutoCAD Web Studio. All rights reserved.</span>
+    <a href="privacy.html" style="color:var(--text-muted);text-decoration:none;">Privacy Policy</a>
+  </div>
+</footer>
+
+<script>
+const allShortcuts = [
+  // GENERAL
+  { cat:'general', label:'New Drawing', keys:[['Ctrl','N']], desc:'Create a new drawing file' },
+  { cat:'general', label:'Open File', keys:[['Ctrl','O']], desc:'Open an existing file' },
+  { cat:'general', label:'Save Drawing', keys:[['Ctrl','S']], desc:'Save current drawing' },
+  { cat:'general', label:'Save As', keys:[['Ctrl','Shift','S']], desc:'Save with new name' },
+  { cat:'general', label:'Undo', keys:[['Ctrl','Z']], desc:'Undo last action' },
+  { cat:'general', label:'Redo', keys:[['Ctrl','Y']], desc:'Redo last undone action' },
+  { cat:'general', label:'Cut', keys:[['Ctrl','X']], desc:'Cut selected objects' },
+  { cat:'general', label:'Copy', keys:[['Ctrl','C']], desc:'Copy selected objects' },
+  { cat:'general', label:'Paste', keys:[['Ctrl','V']], desc:'Paste from clipboard' },
+  { cat:'general', label:'Select All', keys:[['Ctrl','A']], desc:'Select all objects' },
+  { cat:'general', label:'Delete', keys:[['Del']], desc:'Delete selected objects' },
+  { cat:'general', label:'Print', keys:[['Ctrl','P']], desc:'Print/Plot drawing' },
+  { cat:'general', label:'Escape', keys:[['Esc']], desc:'Cancel current command' },
+  { cat:'general', label:'Properties', keys:[['Ctrl','1']], desc:'Open properties panel' },
+  { cat:'general', label:'Help', keys:[['F1']], desc:'Open help dialog' },
+  { cat:'general', label:'Repeat Last', keys:[['Enter']], desc:'Repeat last command' },
+  { cat:'general', label:'Command Line', keys:[['Ctrl','9']], desc:'Toggle command line' },
+
+  // DRAWING
+  { cat:'drawing', label:'Line', keys:[['L']], desc:'Draw a line segment' },
+  { cat:'drawing', label:'Polyline', keys:[['PL']], desc:'Draw connected polyline' },
+  { cat:'drawing', label:'Circle', keys:[['C']], desc:'Draw circle by center+radius' },
+  { cat:'drawing', label:'Arc', keys:[['A']], desc:'Draw an arc' },
+  { cat:'drawing', label:'Rectangle', keys:[['REC']], desc:'Draw rectangle by 2 corners' },
+  { cat:'drawing', label:'Ellipse', keys:[['EL']], desc:'Draw ellipse or elliptic arc' },
+  { cat:'drawing', label:'Polygon', keys:[['POL']], desc:'Draw regular polygon' },
+  { cat:'drawing', label:'Spline', keys:[['SPL']], desc:'Draw spline curve' },
+  { cat:'drawing', label:'Hatch', keys:[['H']], desc:'Fill area with hatch pattern' },
+  { cat:'drawing', label:'Text (Multi)', keys:[['MT']], desc:'Create multiline text' },
+  { cat:'drawing', label:'Text (Single)', keys:[['DT']], desc:'Create single line text' },
+  { cat:'drawing', label:'Point', keys:[['PO']], desc:'Place a point object' },
+  { cat:'drawing', label:'Ray', keys:[['RAY']], desc:'Draw a semi-infinite ray' },
+  { cat:'drawing', label:'Construction Line', keys:[['XL']], desc:'Draw infinite construction line' },
+  { cat:'drawing', label:'Donut', keys:[['DO']], desc:'Draw a filled donut shape' },
+  { cat:'drawing', label:'Revision Cloud', keys:[['REVCLOUD']], desc:'Draw revision cloud' },
+  { cat:'drawing', label:'Wipeout', keys:[['WI']], desc:'Create wipeout region' },
+
+  // EDITING
+  { cat:'editing', label:'Move', keys:[['M']], desc:'Move objects to new position' },
+  { cat:'editing', label:'Copy Object', keys:[['CO']], desc:'Copy objects to new position' },
+  { cat:'editing', label:'Rotate', keys:[['RO']], desc:'Rotate objects around a point' },
+  { cat:'editing', label:'Scale', keys:[['SC']], desc:'Scale objects by factor' },
+  { cat:'editing', label:'Mirror', keys:[['MI']], desc:'Mirror objects across a line' },
+  { cat:'editing', label:'Trim', keys:[['TR']], desc:'Trim objects at cutting edges' },
+  { cat:'editing', label:'Extend', keys:[['EX']], desc:'Extend objects to boundary' },
+  { cat:'editing', label:'Offset', keys:[['O']], desc:'Offset object by distance' },
+  { cat:'editing', label:'Fillet', keys:[['F']], desc:'Round corners with arc' },
+  { cat:'editing', label:'Chamfer', keys:[['CHA']], desc:'Bevel corners at angle' },
+  { cat:'editing', label:'Stretch', keys:[['S']], desc:'Stretch objects with window' },
+  { cat:'editing', label:'Array', keys:[['AR']], desc:'Create rectangular/polar array' },
+  { cat:'editing', label:'Break', keys:[['BR']], desc:'Break object at two points' },
+  { cat:'editing', label:'Join', keys:[['J']], desc:'Join collinear objects' },
+  { cat:'editing', label:'Explode', keys:[['X']], desc:'Explode compound object' },
+  { cat:'editing', label:'Grip Edit', keys:[['Ctrl','Shift','A']], desc:'Toggle grips' },
+  { cat:'editing', label:'Properties', keys:[['CH']], desc:'Edit object properties' },
+  { cat:'editing', label:'Match Properties', keys:[['MA']], desc:'Match properties from source' },
+
+  // VIEW
+  { cat:'view', label:'Zoom Window', keys:[['Z','W']], desc:'Zoom into selected window' },
+  { cat:'view', label:'Zoom Extents', keys:[['Z','E']], desc:'Zoom to fit all objects' },
+  { cat:'view', label:'Zoom Previous', keys:[['Z','P']], desc:'Return to previous zoom' },
+  { cat:'view', label:'Zoom All', keys:[['Z','A']], desc:'Zoom to drawing limits' },
+  { cat:'view', label:'Pan', keys:[['P']], desc:'Pan view (drag to move)' },
+  { cat:'view', label:'Real-time Zoom', keys:[['Z']], desc:'Scroll to zoom in/out' },
+  { cat:'view', label:'Regenerate', keys:[['RE']], desc:'Regenerate current view' },
+  { cat:'view', label:'Regen All', keys:[['REA']], desc:'Regenerate all viewports' },
+  { cat:'view', label:'Grid On/Off', keys:[['F7']], desc:'Toggle grid display' },
+  { cat:'view', label:'Ortho Mode', keys:[['F8']], desc:'Toggle orthogonal mode' },
+  { cat:'view', label:'Snap Mode', keys:[['F9']], desc:'Toggle grid snap' },
+  { cat:'view', label:'Polar Tracking', keys:[['F10']], desc:'Toggle polar tracking' },
+  { cat:'view', label:'Object Snap', keys:[['F3']], desc:'Toggle object snap (OSNAP)' },
+  { cat:'view', label:'Isometric View', keys:[['F5']], desc:'Cycle isometric planes' },
+  { cat:'view', label:'Named Views', keys:[['V']], desc:'Open saved views dialog' },
+  { cat:'view', label:'Viewport', keys:[['MV']], desc:'Create viewport' },
+
+  // DIMENSION
+  { cat:'dimension', label:'Linear Dimension', keys:[['DLI']], desc:'Linear dimension between points' },
+  { cat:'dimension', label:'Aligned Dimension', keys:[['DAL']], desc:'Aligned dimension (angled)' },
+  { cat:'dimension', label:'Angular Dimension', keys:[['DAN']], desc:'Angular dimension between lines' },
+  { cat:'dimension', label:'Radius Dimension', keys:[['DRA']], desc:'Radius dimension for arc/circle' },
+  { cat:'dimension', label:'Diameter Dimension', keys:[['DDI']], desc:'Diameter for circle/arc' },
+  { cat:'dimension', label:'Dimension Style', keys:[['D']], desc:'Open dimension style manager' },
+  { cat:'dimension', label:'Ordinate Dimension', keys:[['DOR']], desc:'Ordinate dimension' },
+  { cat:'dimension', label:'Baseline Dimension', keys:[['DBA']], desc:'Dimension from baseline' },
+  { cat:'dimension', label:'Continue Dimension', keys:[['DCO']], desc:'Continue from last dimension' },
+  { cat:'dimension', label:'Leader Line', keys:[['LE']], desc:'Create leader with annotation' },
+  { cat:'dimension', label:'Center Mark', keys:[['DCE']], desc:'Add center mark to circle' },
+  { cat:'dimension', label:'Quick Dimension', keys:[['QDIM']], desc:'Quick dimension selected objects' },
+
+  // LAYER
+  { cat:'layer', label:'Layer Manager', keys:[['LA']], desc:'Open layer properties manager' },
+  { cat:'layer', label:'Layer Control', keys:[['LAYER']], desc:'Layer control dropdown' },
+  { cat:'layer', label:'Freeze Layer', keys:[['LAYFR']], desc:'Freeze selected layer' },
+  { cat:'layer', label:'Thaw All Layers', keys:[['LAYTHW']], desc:'Thaw all frozen layers' },
+  { cat:'layer', label:'Isolate Layer', keys:[['LAYISO']], desc:'Isolate object\'s layer' },
+  { cat:'layer', label:'Unisolate', keys:[['LAYUNISO']], desc:'Restore all layers' },
+  { cat:'layer', label:'Lock Layer', keys:[['LAYLCK']], desc:'Lock selected layer' },
+  { cat:'layer', label:'Unlock Layer', keys:[['LAYULK']], desc:'Unlock selected layer' },
+  { cat:'layer', label:'Make Current', keys:[['LAYMCUR']], desc:'Make object layer current' },
+  { cat:'layer', label:'Layer Walk', keys:[['LAYWALK']], desc:'Walk through layers' },
+  { cat:'layer', label:'Change Layer', keys:[['LAYCHG']], desc:'Change object to current layer' },
+  { cat:'layer', label:'Layer Previous', keys:[['LAYP']], desc:'Restore previous layer state' },
+
+  // 3D
+  { cat:'3d', label:'3D Orbit', keys:[['3DO']], desc:'3D orbit camera around model' },
+  { cat:'3d', label:'Free Orbit', keys:[['FREEORBIT']], desc:'Free 3D orbit (any direction)' },
+  { cat:'3d', label:'Constrained Orbit', keys:[['ORBIT']], desc:'Constrained orbit rotation' },
+  { cat:'3d', label:'Box 3D', keys:[['BOX']], desc:'Create a 3D solid box' },
+  { cat:'3d', label:'Sphere 3D', keys:[['SPHERE']], desc:'Create a 3D solid sphere' },
+  { cat:'3d', label:'Cylinder 3D', keys:[['CYLINDER']], desc:'Create a 3D solid cylinder' },
+  { cat:'3d', label:'Cone 3D', keys:[['CONE']], desc:'Create a 3D solid cone' },
+  { cat:'3d', label:'Torus 3D', keys:[['TORUS']], desc:'Create a 3D solid torus' },
+  { cat:'3d', label:'Wedge 3D', keys:[['WEDGE']], desc:'Create a 3D solid wedge' },
+  { cat:'3d', label:'Extrude', keys:[['EXT']], desc:'Extrude 2D shape to 3D' },
+  { cat:'3d', label:'Revolve', keys:[['REV']], desc:'Revolve profile around axis' },
+  { cat:'3d', label:'Loft', keys:[['LOFT']], desc:'Loft between cross-sections' },
+  { cat:'3d', label:'Sweep', keys:[['SWEEP']], desc:'Sweep profile along path' },
+  { cat:'3d', label:'Union', keys:[['UNI']], desc:'Union (combine) solids' },
+  { cat:'3d', label:'Subtract', keys:[['SU']], desc:'Subtract one solid from another' },
+  { cat:'3d', label:'Intersect', keys:[['IN']], desc:'Keep only intersecting volume' },
+  { cat:'3d', label:'Section Plane', keys:[['SECTIONPLANE']], desc:'Create live section cut' },
+  { cat:'3d', label:'Render', keys:[['RR']], desc:'Render current view' },
+];
+
+// Build HTML
+function buildShortcuts(data) {
+  const container = document.getElementById('shortcutsContent');
+  const cats = {
+    general: { title:'General', icon:'⚡', desc:'File operations, undo, clipboard', color:'cyan' },
+    drawing: { title:'Drawing Tools', icon:'✏️', desc:'Create lines, shapes, and objects', color:'orange' },
+    editing: { title:'Editing', icon:'✂️', desc:'Modify and transform objects', color:'purple' },
+    view: { title:'View & Navigation', icon:'👁️', desc:'Zoom, pan, and view controls', color:'green' },
+    dimension: { title:'Dimensioning', icon:'📐', desc:'Add measurements and annotations', color:'cyan' },
+    layer: { title:'Layers', icon:'🗂️', desc:'Manage drawing layers', color:'orange' },
+    '3d': { title:'3D Modeling', icon:'🧊', desc:'3D shapes and transformations', color:'purple' },
+  };
+
+  const grouped = {};
+  data.forEach(s => {
+    if (!grouped[s.cat]) grouped[s.cat] = [];
+    grouped[s.cat].push(s);
+  });
+
+  let html = '';
+  Object.keys(cats).forEach(cat => {
+    const items = grouped[cat] || [];
+    if (!items.length) return;
+    const info = cats[cat];
+    html += `<div class="category-section" data-cat="${cat}">
+      <div class="category-header">
+        <div class="cat-icon" style="background:rgba(var(--${info.color}-rgb,0,212,255),0.1);">${info.icon}</div>
+        <div class="cat-info"><h2>${info.title}</h2><p>${info.desc}</p></div>
+        <span class="cat-count">${items.length} shortcuts</span>
+      </div>
+      <div class="shortcuts-grid">`;
+    items.forEach(s => {
+      const keysHtml = s.keys.map(combo => {
+        if (combo.length === 1) {
+          const k = combo[0];
+          const isMod = k.startsWith('Ctrl') || k.startsWith('Shift') || k.startsWith('Alt');
+          const cls = k.length <= 3 && !isMod ? 'key special' : (isMod ? 'key mod' : 'key');
+          return `<span class="${cls}">${k}</span>`;
+        } else {
+          return combo.map((k,i) => {
+            const isMod = k.startsWith('Ctrl') || k.startsWith('Shift') || k.startsWith('Alt');
+            const cls = isMod ? 'key mod' : 'key special';
+            return `<span class="${cls}">${k}</span>${i < combo.length-1 ? '<span class="plus">+</span>' : ''}`;
+          }).join('');
+        }
+      }).join('<span class="plus">,</span>');
+      html += `<div class="shortcut-item" data-label="${s.label.toLowerCase()}" data-cat="${cat}">
+        <span class="shortcut-label">${s.label}</span>
+        <div class="shortcut-keys">${keysHtml}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML += html;
+  document.getElementById('searchCount').textContent = data.length + ' shortcuts';
+}
+
+function searchShortcuts() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const items = document.querySelectorAll('.shortcut-item');
+  let visible = 0;
+  items.forEach(item => {
+    const match = item.dataset.label.includes(q) || item.textContent.toLowerCase().includes(q);
+    item.classList.toggle('hidden', !match);
+    if (match) visible++;
+  });
+  document.querySelectorAll('.category-section').forEach(sec => {
+    const hasVisible = [...sec.querySelectorAll('.shortcut-item')].some(i => !i.classList.contains('hidden'));
+    sec.style.display = hasVisible ? '' : 'none';
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  document.getElementById('searchCount').textContent = visible + ' results';
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('searchInput').value = '';
+  const items = document.querySelectorAll('.shortcut-item');
+  const sections = document.querySelectorAll('.category-section');
+  if (cat === 'all') {
+    items.forEach(i => i.classList.remove('hidden'));
+    sections.forEach(s => s.style.display = '');
+    document.getElementById('searchCount').textContent = allShortcuts.length + ' shortcuts';
+  } else {
+    sections.forEach(s => s.style.display = s.dataset.cat === cat ? '' : 'none');
+    document.getElementById('searchCount').textContent = allShortcuts.filter(s=>s.cat===cat).length + ' shortcuts';
+  }
+  document.getElementById('noResults').style.display = 'none';
+}
+
+buildShortcuts(allShortcuts);
+</script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoCAD Web Studio — Professional Design Platform</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 20% 50%, rgba(139,92,246,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 50%, rgba(0,212,255,0.12) 0%, transparent 60%),
+              var(--bg-primary);
+}
+.hero-content {
+  text-align: center;
+  z-index: 2;
+  max-width: 900px;
+  padding: 2rem;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 50px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease;
+}
+.hero-badge .dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; animation: pulse-glow 2s infinite; }
+.hero-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s 0.1s ease both;
+}
+.hero-title .line1 { display: block; color: var(--text); }
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease infinite, fadeInUp 0.6s 0.1s ease both;
+}
+.hero-desc {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  animation: fadeInUp 0.6s 0.2s ease both;
+}
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.6s 0.3s ease both;
+}
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
+  animation: fadeInUp 0.6s 0.4s ease both;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Grid bg */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* ===== FEATURE CARDS ===== */
+.features-section { background: var(--bg-secondary); padding: 5rem 2rem; }
+.features-inner { max-width: 1200px; margin: 0 auto; }
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.feature-card.cyan::before { background: linear-gradient(90deg, var(--cyan), #0095ff); }
+.feature-card.purple::before { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+.feature-card.orange::before { background: linear-gradient(90deg, var(--orange), var(--yellow)); }
+.feature-card.green::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.feature-card.pink::before { background: linear-gradient(90deg, var(--pink), var(--purple)); }
+.feature-card.yellow::before { background: linear-gradient(90deg, var(--yellow), var(--orange)); }
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.feature-icon {
+  width: 60px; height: 60px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+  margin-bottom: 1.2rem;
+}
+.icon-cyan { background: rgba(0,212,255,0.15); }
+.icon-purple { background: rgba(139,92,246,0.15); }
+.icon-orange { background: rgba(249,115,22,0.15); }
+.icon-green { background: rgba(34,197,94,0.15); }
+.icon-pink { background: rgba(236,72,153,0.15); }
+.icon-yellow { background: rgba(234,179,8,0.15); }
+
+.feature-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+.feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.feature-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: gap 0.2s;
+}
+.feature-link:hover { gap: 10px; }
+.feature-link.cyan { color: var(--cyan); }
+.feature-link.purple { color: var(--purple); }
+.feature-link.orange { color: var(--orange); }
+.feature-link.green { color: var(--green); }
+.feature-link.pink { color: var(--pink); }
+.feature-link.yellow { color: var(--yellow); }
+
+/* ===== TOOLS SHOWCASE ===== */
+.tools-section { padding: 5rem 2rem; }
+.tools-inner { max-width: 1200px; margin: 0 auto; }
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+.tools-preview {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.preview-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.toolbar-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.toolbar-btn.active, .toolbar-btn:hover { background: rgba(0,212,255,0.15); color: var(--cyan); border-color: rgba(0,212,255,0.3); }
+.preview-canvas {
+  background: #0a1628;
+  border-radius: 8px;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,212,255,0.1);
+}
+.canvas-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.canvas-shape {
+  position: absolute;
+  border: 2px solid;
+  border-radius: 2px;
+}
+.shape-rect { width: 120px; height: 80px; top: 60px; left: 40px; border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,212,255,0.3); }
+.shape-circle { width: 70px; height: 70px; border-radius: 50%; top: 80px; left: 220px; border-color: var(--purple); box-shadow: 0 0 10px rgba(139,92,246,0.3); }
+.shape-triangle {
+  width: 0; height: 0;
+  border: none;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 86px solid rgba(249,115,22,0.4);
+  top: 140px; left: 120px;
+  box-shadow: none;
+}
+.shape-line { width: 160px; height: 2px; background: var(--green); top: 200px; left: 60px; box-shadow: 0 0 8px rgba(34,197,94,0.4); transform: rotate(-15deg); }
+.dimension-line {
+  position: absolute;
+  width: 120px; height: 1px;
+  background: rgba(234,179,8,0.6);
+  top: 155px; left: 40px;
+}
+.dimension-line::before, .dimension-line::after {
+  content: ''; position: absolute;
+  width: 1px; height: 8px;
+  background: rgba(234,179,8,0.6);
+  top: -4px;
+}
+.dimension-line::before { left: 0; }
+.dimension-line::after { right: 0; }
+.dim-label {
+  position: absolute;
+  font-size: 9px;
+  color: var(--yellow);
+  top: 162px; left: 80px;
+}
+.cursor-dot {
+  position: absolute;
+  width: 12px; height: 12px;
+  top: 80px; right: 80px;
+  pointer-events: none;
+}
+.cursor-dot::before, .cursor-dot::after {
+  content: '';
+  position: absolute;
+  background: var(--cyan);
+}
+.cursor-dot::before { width: 12px; height: 1px; top: 6px; left: 0; }
+.cursor-dot::after { width: 1px; height: 12px; top: 0; left: 6px; }
+
+.tools-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.tools-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.tools-list li:hover { border-color: rgba(0,212,255,0.3); background: var(--bg-card-hover); }
+.tool-icon-sm { font-size: 1.4rem; }
+.tool-info h4 { font-size: 0.95rem; font-weight: 600; }
+.tool-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ===== WORKFLOW ===== */
+.workflow-section { background: var(--bg-secondary); padding: 5rem 2rem; }
+.workflow-inner { max-width: 1000px; margin: 0 auto; }
+.workflow-steps { display: flex; flex-direction: column; gap: 0; }
+.workflow-step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.workflow-step:last-child { border-bottom: none; }
+.step-number {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.step-1 { background: rgba(0,212,255,0.15); color: var(--cyan); border: 2px solid rgba(0,212,255,0.3); }
+.step-2 { background: rgba(139,92,246,0.15); color: var(--purple); border: 2px solid rgba(139,92,246,0.3); }
+.step-3 { background: rgba(249,115,22,0.15); color: var(--orange); border: 2px solid rgba(249,115,22,0.3); }
+.step-4 { background: rgba(34,197,94,0.15); color: var(--green); border: 2px solid rgba(34,197,94,0.3); }
+.step-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.step-content p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%);
+}
+.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.cta-inner h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; }
+.cta-inner p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; }
+.cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .tools-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.5rem; }
+  .stat-number { font-size: 1.6rem; }
+  .workflow-step { grid-template-columns: 50px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">⚙️</div>
+    <span>AutoCAD Web Studio</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="sketch2d.html">2D Sketch</a></li>
+    <li><a href="sketch3d.html">3D Sketch</a></li>
+    <li><a href="shortcuts.html">Shortcuts</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sketch2d.html" class="nav-cta">Start Drawing</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero page-content">
+  <div class="hero-grid"></div>
+  <div class="glow-orb" style="width:600px;height:600px;left:-200px;top:50%;transform:translateY(-50%);background:var(--purple);"></div>
+  <div class="glow-orb" style="width:500px;height:500px;right:-150px;top:30%;background:var(--cyan);"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Professional CAD Tool — Browser-Based, No Install Required
+    </div>
+    <h1 class="hero-title">
+      <span class="line1">Design Without Limits</span>
+      <span class="line2">AutoCAD Web Studio</span>
+    </h1>
+    <p class="hero-desc">
+      Powerful 2D drafting and 3D modeling right in your browser. 50+ tools, 100+ shortcuts, real-time collaboration — all for free.
+    </p>
+    <div class="hero-actions">
+      <a href="sketch2d.html" class="btn btn-primary">🖊️ Open 2D Canvas</a>
+      <a href="sketch3d.html" class="btn btn-outline">🧊 Launch 3D Studio</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Drawing Tools</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100+</div>
+        <div class="stat-label">Shortcuts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">HD</div>
+        <div class="stat-label">Export Quality</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Free</div>
+        <div class="stat-label">Forever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="section-title gradient-cyan">Everything You Need to Design</div>
+    <p class="section-subtitle">Professional-grade CAD tools accessible from any browser — no installation needed.</p>
+    <div class="grid-3" style="margin-top:2.5rem;">
+
+      <div class="feature-card cyan">
+        <div class="feature-icon icon-cyan">🖊️</div>
+        <h3>2D Drafting</h3>
+        <p>Draw lines, arcs, circles, polygons, dimensions and annotations with precision snap-to-grid tools.</p>
+        <a href="sketch2d.html" class="feature-link cyan">Open 2D Canvas →</a>
+      </div>
+
+      <div class="feature-card purple">
+        <div class="feature-icon icon-purple">🧊</div>
+        <h3>3D Modeling</h3>
+        <p>Build 3D objects with boxes, spheres, cylinders and more. Orbit, pan, zoom with full scene control.</p>
+        <a href="sketch3d.html" class="feature-link purple">Open 3D Studio →</a>
+      </div>
+
+      <div class="feature-card orange">
+        <div class="feature-icon icon-orange">⌨️</div>
+        <h3>Keyboard Shortcuts</h3>
+        <p>Master 100+ AutoCAD-standard shortcuts organized by category with visual keyboard guide.</p>
+        <a href="shortcuts.html" class="feature-link orange">View Shortcuts →</a>
+      </div>
+
+      <div class="feature-card green">
+        <div class="feature-icon icon-green">📐</div>
+        <h3>Precision Tools</h3>
+        <p>Snap-to-grid, orthogonal mode, angle lock, and coordinate input for millimeter-perfect designs.</p>
+        <a href="sketch2d.html" class="feature-link green">Try Precision →</a>
+      </div>
+
+      <div class="feature-card pink">
+        <div class="feature-icon icon-pink">🎨</div>
+        <h3>Layer Management</h3>
+        <p>Organize drawings with multi-layer support. Control visibility, lock layers, and assign colors.</p>
+        <a href="sketch2d.html" class="feature-link pink">Explore Layers →</a>
+      </div>
+
+      <div class="feature-card yellow">
+        <div class="feature-icon icon-yellow">💾</div>
+        <h3>Export & Save</h3>
+        <p>Export your designs as PNG, SVG, or PDF. Save locally with one click or share via URL.</p>
+        <a href="sketch2d.html" class="feature-link yellow">Export Now →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS SHOWCASE -->
+<section class="tools-section">
+  <div class="tools-inner">
+    <div class="tools-grid">
+      <div>
+        <div class="badge badge-cyan" style="margin-bottom:1rem;">✨ 2D Drawing Tools</div>
+        <h2 style="font-size:2rem;font-weight:800;margin-bottom:1rem;">Draw with <span class="gradient-cyan">Precision</span></h2>
+        <p style="color:var(--text-muted);margin-bottom:2rem;">Every tool you need for professional 2D drafting — built right into your browser with zero setup.</p>
+        <ul class="tools-list">
+          <li><span class="tool-icon-sm">📏</span><div class="tool-info"><h4>Line & Polyline</h4><p>Draw single lines or connected polylines with exact angles</p></div></li>
+          <li><span class="tool-icon-sm">⭕</span><div class="tool-info"><h4>Circle & Arc</h4><p>Create perfect circles by center+radius or three points</p></div></li>
+          <li><span class="tool-icon-sm">▭</span><div class="tool-info"><h4>Rectangle & Polygon</h4><p>Rectangles, squares, and regular polygons up to 12 sides</p></div></li>
+          <li><span class="tool-icon-sm">📐</span><div class="tool-info"><h4>Dimension Lines</h4><p>Auto-dimensioning with linear, angular and radial dimensions</p></div></li>
+        </ul>
+      </div>
+      <div>
+        <div class="tools-preview">
+          <div class="preview-toolbar">
+            <button class="toolbar-btn active">Line</button>
+            <button class="toolbar-btn">Circle</button>
+            <button class="toolbar-btn">Rect</button>
+            <button class="toolbar-btn">Arc</button>
+            <button class="toolbar-btn">Dim</button>
+          </div>
+          <div class="preview-canvas">
+            <div class="canvas-grid"></div>
+            <div class="canvas-shape shape-rect"></div>
+            <div class="canvas-shape shape-circle"></div>
+            <div class="canvas-shape shape-line"></div>
+            <div class="dimension-line"></div>
+            <div class="dim-label">120.00</div>
+            <div class="cursor-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section class="workflow-section">
+  <div class="workflow-inner">
+    <div class="section-title gradient-purple">How It Works</div>
+    <p class="section-subtitle">Go from idea to finished drawing in minutes.</p>
+    <div class="workflow-steps">
+      <div class="workflow-step">
+        <div class="step-number step-1">1</div>
+        <div class="step-content">
+          <h3>Open the Canvas</h3>
+          <p>Launch 2D or 3D sketch tool directly in your browser. Set up grid, units, and drawing scale — no login required.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number step-2">2</div>
+        <div class="step-content">
+          <h3>Select Your Tools</h3>
+          <p>Pick from 50+ drawing tools in the sidebar. Use keyboard shortcuts just like AutoCAD for faster workflow.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number step-3">3</div>
+        <div class="step-content">
+          <h3>Draw & Edit</h3>
+          <p>Create shapes, add dimensions, apply colors and fills. Undo/redo up to 50 steps. Layer management included.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number step-4">4</div>
+        <div class="step-content">
+          <h3>Export Your Design</h3>
+          <p>Save as PNG, SVG or PDF in high resolution. Share your design link or download locally.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="badge badge-purple" style="margin-bottom:1.5rem;">🚀 Ready to Design?</div>
+    <h2>Start Drawing <span class="gradient-purple">Right Now</span></h2>
+    <p>No sign-up, no download. Open the canvas and start creating professional drawings instantly.</p>
+    <div class="cta-actions">
+      <a href="sketch2d.html" class="btn btn-primary">🖊️ Open 2D Canvas</a>
+      <a href="sketch3d.html" class="btn btn-secondary">🧊 Go to 3D Studio</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="display:inline-flex;">
+        <div class="logo-icon" style="width:32px;height:32px;font-size:1rem;">⚙️</div>
+        <span>AutoCAD Web Studio</span>
+      </a>
+      <p>Professional browser-based CAD tools. 2D drafting and 3D modeling for engineers, architects, and designers — completely free.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="sketch2d.html">2D Sketch</a>
+      <a href="sketch3d.html">3D Sketch</a>
+      <a href="shortcuts.html">Shortcut Keys</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="shortcuts.html">Keyboard Guide</a>
+      <a href="about.html#contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AutoCAD Web Studio. All rights reserved.</span>
+    <span style="display:flex;gap:1rem;">
+      <a href="privacy.html" style="color:var(--text-muted);text-decoration:none;">Privacy</a>
+      <a href="about.html" style="color:var(--text-muted);text-decoration:none;">About</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
